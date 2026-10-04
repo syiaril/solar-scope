@@ -4,6 +4,61 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { planets } from '@/data/planets';
 
+interface PlanetSelectorProps {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  planet: (typeof planets)[0];
+  focusBorderClass: string;
+}
+
+function PlanetSelector({
+  id,
+  label,
+  value,
+  onChange,
+  planet,
+  focusBorderClass,
+}: PlanetSelectorProps) {
+  return (
+    <div className="flex flex-col items-center">
+      <label htmlFor={id} className="sr-only">{label}</label>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 outline-none ${focusBorderClass} transition-colors appearance-none text-center cursor-pointer font-semibold shadow-inner`}
+      >
+        {planets.map((p) => (
+          <option key={p.id} value={p.id}>
+            {p.name}
+          </option>
+        ))}
+      </select>
+      <div className="relative flex items-center justify-center w-24 h-24 md:w-32 md:h-32 mt-6">
+        <div
+          className="w-20 h-20 md:w-28 md:h-28 rounded-full shadow-lg relative z-10"
+          style={{
+            background: `radial-gradient(circle at 35% 35%, ${planet.color} 0%, #1e1b4b 100%)`,
+            boxShadow: `inset -4px -4px 10px rgba(0,0,0,0.6), 0 0 20px ${planet.color}40`,
+          }}
+        />
+        {planet.id === 'saturn' && (
+          <div
+            className="absolute z-20 w-32 h-10 border-2 rounded-[100%] pointer-events-none rotate-[-20deg]"
+            style={{
+              borderColor: `${planet.color}88`,
+              boxShadow: `0 0 10px ${planet.color}40`,
+            }}
+          />
+        )}
+      </div>
+      <span className="text-white font-bold mt-2 text-lg">{planet.name}</span>
+    </div>
+  );
+}
+
 export default function PlanetComparison() {
   const [planetAId, setPlanetAId] = useState('earth');
   const [planetBId, setPlanetBId] = useState('mars');
@@ -25,75 +80,22 @@ export default function PlanetComparison() {
 
       {/* Selectors and Visuals */}
       <div className="grid grid-cols-2 gap-4 md:gap-12 mb-10">
-        <div className="flex flex-col items-center">
-          <label htmlFor="planet-a-select" className="sr-only">Pilih Planet Pertama</label>
-          <select
-            id="planet-a-select"
-            value={planetAId}
-            onChange={(e) => setPlanetAId(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 outline-none focus:border-[#7C3AED] transition-colors appearance-none text-center cursor-pointer font-semibold shadow-inner"
-          >
-            {planets.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-          <div className="relative flex items-center justify-center w-24 h-24 md:w-32 md:h-32 mt-6">
-            <div
-              className="w-20 h-20 md:w-28 md:h-28 rounded-full shadow-lg relative z-10"
-              style={{
-                background: `radial-gradient(circle at 35% 35%, ${planetA.color} 0%, #1e1b4b 100%)`,
-                boxShadow: `inset -4px -4px 10px rgba(0,0,0,0.6), 0 0 20px ${planetA.color}40`,
-              }}
-            />
-            {planetA.id === 'saturn' && (
-              <div
-                className="absolute z-20 w-32 h-10 border-2 rounded-[100%] pointer-events-none rotate-[-20deg]"
-                style={{
-                  borderColor: `${planetA.color}88`,
-                  boxShadow: `0 0 10px ${planetA.color}40`,
-                }}
-              />
-            )}
-          </div>
-          <span className="text-white font-bold mt-2 text-lg">{planetA.name}</span>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <label htmlFor="planet-b-select" className="sr-only">Pilih Planet Kedua</label>
-          <select
-            id="planet-b-select"
-            value={planetBId}
-            onChange={(e) => setPlanetBId(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 outline-none focus:border-[#38BDF8] transition-colors appearance-none text-center cursor-pointer font-semibold shadow-inner"
-          >
-            {planets.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-          <div className="relative flex items-center justify-center w-24 h-24 md:w-32 md:h-32 mt-6">
-            <div
-              className="w-20 h-20 md:w-28 md:h-28 rounded-full shadow-lg relative z-10"
-              style={{
-                background: `radial-gradient(circle at 35% 35%, ${planetB.color} 0%, #1e1b4b 100%)`,
-                boxShadow: `inset -4px -4px 10px rgba(0,0,0,0.6), 0 0 20px ${planetB.color}40`,
-              }}
-            />
-            {planetB.id === 'saturn' && (
-              <div
-                className="absolute z-20 w-32 h-10 border-2 rounded-[100%] pointer-events-none rotate-[-20deg]"
-                style={{
-                  borderColor: `${planetB.color}88`,
-                  boxShadow: `0 0 10px ${planetB.color}40`,
-                }}
-              />
-            )}
-          </div>
-          <span className="text-white font-bold mt-2 text-lg">{planetB.name}</span>
-        </div>
+        <PlanetSelector
+          id="planet-a-select"
+          label="Pilih Planet Pertama"
+          value={planetAId}
+          onChange={setPlanetAId}
+          planet={planetA}
+          focusBorderClass="focus:border-[#7C3AED]"
+        />
+        <PlanetSelector
+          id="planet-b-select"
+          label="Pilih Planet Kedua"
+          value={planetBId}
+          onChange={setPlanetBId}
+          planet={planetB}
+          focusBorderClass="focus:border-[#38BDF8]"
+        />
       </div>
 
       {/* Numeric Comparisons */}

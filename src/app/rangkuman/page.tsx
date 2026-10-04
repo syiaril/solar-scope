@@ -65,87 +65,64 @@ export default function RangkumanPage() {
 
           {/* Pengelompokan Planet Dalam & Luar dengan Tata Letak Lega */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Bagian Planet Dalam */}
-            <div className="p-6 md:p-7 rounded-3xl bg-[#070C1E] border border-slate-800 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">🪨</span>
-                  <h3 className="text-xl font-bold text-amber-400">
-                    Planet Dalam (Terestrial)
-                  </h3>
-                </div>
-                <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-                  Terletak di antara Matahari dan sabuk asteroid. Berukuran lebih kecil, memiliki permukaan padat, dan tersusun atas bebatuan serta logam.
-                </p>
+            {[
+              {
+                icon: '🪨',
+                title: 'Planet Dalam (Terestrial)',
+                titleColor: 'text-amber-400',
+                desc: 'Terletak di antara Matahari dan sabuk asteroid. Berukuran lebih kecil, memiliki permukaan padat, dan tersusun atas bebatuan serta logam.',
+                items: planetDalam,
+              },
+              {
+                icon: '🪐',
+                title: 'Planet Luar (Raksasa Gas & Es)',
+                titleColor: 'text-sky-400',
+                desc: 'Terletak di luar sabuk asteroid. Berukuran raksasa, tersusun atas gas dan es tebal, serta memiliki banyak satelit alami dan sistem cincin.',
+                items: planetLuar,
+              },
+            ].map((group) => (
+              <div
+                key={group.title}
+                className="p-6 md:p-7 rounded-3xl bg-[#070C1E] border border-slate-800 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-2xl">{group.icon}</span>
+                    <h3 className={`text-xl font-bold ${group.titleColor}`}>
+                      {group.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+                    {group.desc}
+                  </p>
 
-                {/* List Planet Dalam dengan Spacing Lega */}
-                <div className="space-y-4">
-                  {planetDalam.map((p) => (
-                    <div
-                      key={p.id}
-                      className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col gap-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2.5">
-                          <span
-                            className="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm"
-                            style={{ backgroundColor: p.color }}
-                          />
-                          {p.order}. {p.name}
-                        </span>
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                          {p.distanceFromSun} jt km
-                        </span>
+                  <div className="space-y-4">
+                    {group.items.map((p) => (
+                      <div
+                        key={p.id}
+                        className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col gap-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2.5">
+                            <span
+                              className="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm"
+                              style={{ backgroundColor: p.color }}
+                            />
+                            {p.order}. {p.name}
+                          </span>
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
+                            {p.distanceFromSun} jt km
+                          </span>
+                        </div>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pl-6">
+                          {p.description}
+                        </p>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pl-6">
-                        {p.description}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Bagian Planet Luar */}
-            <div className="p-6 md:p-7 rounded-3xl bg-[#070C1E] border border-slate-800 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">🪐</span>
-                  <h3 className="text-xl font-bold text-sky-400">
-                    Planet Luar (Raksasa Gas & Es)
-                  </h3>
-                </div>
-                <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-                  Terletak di luar sabuk asteroid. Berukuran raksasa, tersusun atas gas dan es tebal, serta memiliki banyak satelit alami dan sistem cincin.
-                </p>
-
-                {/* List Planet Luar dengan Spacing Lega */}
-                <div className="space-y-4">
-                  {planetLuar.map((p) => (
-                    <div
-                      key={p.id}
-                      className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col gap-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2.5">
-                          <span
-                            className="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm"
-                            style={{ backgroundColor: p.color }}
-                          />
-                          {p.order}. {p.name}
-                        </span>
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                          {p.distanceFromSun} jt km
-                        </span>
-                      </div>
-                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pl-6">
-                        {p.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 

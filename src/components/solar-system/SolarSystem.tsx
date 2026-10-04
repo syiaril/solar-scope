@@ -1,14 +1,19 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { planets, sunData } from '@/data/planets';
 import { Planet } from '@/types/planet';
 import { calculateOrbitalPosition, getInitialAngles, BASE_SPEED } from '@/lib/simulation';
 import { Sun } from './Sun';
-import { Orbit } from './Orbit';
 import { Planet as PlanetComponent } from './Planet';
-import { PlanetInfo } from './PlanetInfo';
-import { SimulationControls } from './SimulationControls';
+
+interface SolarSystemProps {
+  selectedPlanet?: Planet | null;
+  onSelectPlanet?: (planet: Planet) => void;
+  isPlaying?: boolean;
+  speed?: number;
+  resetTrigger?: number;
+}
 
 const PLANET_SIZES: Record<string, number> = {
   mercury: 4,
@@ -32,153 +37,143 @@ const STARS = Array.from({ length: 28 }, (_, i) => ({
   opacity: 0.2 + (i % 5) * 0.12,
 }));
 
-export default function SolarSystem() {
-  const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [speed, setSpeed] = useState(1);
-  const [, setFrameTick] = useState(0);
+export default function SolarSystem({
+  selectedPlanet: controlledSelectedPlanet,
+  onSelectPlanet: controlledOnSelectPlanet,
+  isPlaying: controlledIsPlaying,
+  speed: controlledSpeed,
+  resetTrigger = 0,
+}: SolarSystemProps = {}) {
+  const [internalSelectedPlanet, setInternalSelectedPlanet] = useState<Planet | null>(null);
+  const [internalIsPlaying] = useState(true);
+  const [internalSpeed] = useState(1);
+  const [angles, setAngles] = useState<Record<string, number>>(getInitialAngles);
+  const [prevResetTrigger, setPrevResetTrigger] = useState(resetTrigger);
 
-  const anglesRef = useRef<Record<string, number>>(getInitialAngles());
-  const animFrameRef = useRef<number>(0);
-  const lastTimeRef = useRef<number>(0);
+  const selectedPlanet =
+    controlledOnSelectPlanet !== undefined ? (controlledSelectedPlanet ?? null) : internalSelectedPlanet;
+  const isPlaying = controlledIsPlaying !== undefined ? controlledIsPlaying : internalIsPlaying;
+  const speed = controlledSpeed !== undefined ? controlledSpeed : internalSpeed;
 
-  const animate = useCallback(
-    (time: number) => {
-      if (!lastTimeRef.current) {
-        lastTimeRef.current = time;
-      }
-      const delta = Math.min(time - lastTimeRef.current, 100);
-      lastTimeRef.current = time;
-
-      if (isPlaying) {
-        const speedFactor = speed * (delta / 16.67);
-        for (const planet of planets) {
-          anglesRef.current[planet.id] =
-            (anglesRef.current[planet.id] || 0) +
-            planet.orbitSpeed * BASE_SPEED * speedFactor;
-        }
-        setFrameTick((prev) => (prev + 1) % 1000000);
-      }
-
-      animFrameRef.current = requestAnimationFrame(animate);
-    },
-    [isPlaying, speed]
-  );
+  if (resetTrigger !== prevResetTrigger) {
+    setPrevResetTrigger(resetTrigger);
+    setAngles(getInitialAngles());
+  }
 
   useEffect(() => {
-    lastTimeRef.current = 0;
-    animFrameRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animFrameRef.current);
-  }, [animate]);
+    let animId = 0;
+    let lastTime = performance.now();
 
-  const handleReset = useCallback(() => {
-    anglesRef.current = getInitialAngles();
-    lastTimeRef.current = 0;
-    setFrameTick((prev) => (prev + 1) % 1000000);
-  }, []);
+    const loop = (currentTime: number) => {
+      animId = requestAnimationFrame(loop);
+
+      const delta = Math.min((currentTime - lastTime) / 1000, 0.1);
+      lastTime = currentTime;
+
+      if (isPlaying) {
+        const speedFactor = speed * (delta * 60);
+        setAngles((prev) => {
+          const next: Record<string, number> = {};
+          for (const planet of planets) {
+            next[planet.id] =
+              (prev[planet.id] || 0) +
+              planet.orbitSpeed * BASE_SPEED * speedFactor;
+          }
+          return next;
+        });
+      }
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, [isPlaying, speed]);
 
   const handleSelectPlanet = useCallback(
     (planet: Planet) => {
-      setSelectedPlanet((prev) => (prev?.id === planet.id ? null : planet));
+      if (controlledOnSelectPlanet) {
+        controlledOnSelectPlanet(planet);
+      } else {
+        setInternalSelectedPlanet((prev) => (prev?.id === planet.id ? null : planet));
+      }
     },
-    []
+    [controlledOnSelectPlanet]
   );
 
   const handleSelectSun = useCallback(() => {
-    setSelectedPlanet((prev) => (prev?.id === sunData.id ? null : sunData));
-  }, []);
+    if (controlledOnSelectPlanet) {
+      controlledOnSelectPlanet(sunData);
+    } else {
+      setInternalSelectedPlanet((prev) => (prev?.id === sunData.id ? null : sunData));
+    }
+  }, [controlledOnSelectPlanet]);
 
   return (
-    <div className="w-full flex flex-col items-center gap-4">
-      {/* Viewport 2D SVG Penuh - Panel Info Melayang di Dalamnya */}
-      <div className="w-full h-[580px] lg:h-[680px] rounded-2xl overflow-hidden bg-[#030611] border border-slate-800/80 shadow-inner relative flex items-center justify-center p-2 sm:p-4">
-        <svg
-          viewBox="0 0 750 750"
-          className="w-full h-full max-h-full max-w-full aspect-square"
-          role="img"
-          aria-label="Simulasi Tata Surya 2D Skematik interaktif bergerak"
-        >
-          {/* Taburan Bintang Latar Belakang */}
-          {STARS.map((star, i) => (
-            <circle
-              key={`star-${i}`}
-              cx={star.x}
-              cy={star.y}
-              r={star.r}
-              fill="white"
-              opacity={star.opacity}
-            />
-          ))}
+    <div className="w-full h-full flex items-center justify-center p-2 sm:p-4">
+      <svg
+        viewBox="0 0 750 750"
+        className="w-full h-full max-h-full max-w-full aspect-square"
+        role="img"
+        aria-label="Simulasi Tata Surya 2D Skematik interaktif bergerak"
+      >
+        {/* Taburan Bintang Latar Belakang */}
+        {STARS.map((star, i) => (
+          <circle
+            key={`star-${i}`}
+            cx={star.x}
+            cy={star.y}
+            r={star.r}
+            fill="white"
+            opacity={star.opacity}
+          />
+        ))}
 
-          {/* Jalur Orbit Tiap Planet */}
-          {planets.map((planet) => (
-            <Orbit
-              key={`orbit-${planet.id}`}
-              cx={CENTER_X}
-              cy={CENTER_Y}
-              radius={planet.orbitRadius}
-            />
-          ))}
-
-          {/* Matahari di Pusat Orbit (Interaktif saat diklik) */}
-          <Sun
+        {/* Jalur Orbit Tiap Planet */}
+        {planets.map((planet) => (
+          <circle
+            key={`orbit-${planet.id}`}
             cx={CENTER_X}
             cy={CENTER_Y}
-            isSelected={selectedPlanet?.id === 'sun'}
-            onClick={handleSelectSun}
+            r={planet.orbitRadius}
+            stroke="rgba(148, 163, 184, 0.15)"
+            strokeWidth={1}
+            fill="none"
           />
+        ))}
 
-          {/* Planet Mengorbit */}
-          {planets.map((planet) => {
-            const currentAngle = anglesRef.current[planet.id] ?? 0;
-            const pos = calculateOrbitalPosition(
-              CENTER_X,
-              CENTER_Y,
-              planet.orbitRadius,
-              currentAngle
-            );
-
-            return (
-              <PlanetComponent
-                key={planet.id}
-                id={planet.id}
-                name={planet.name}
-                color={planet.color}
-                x={pos.x}
-                y={pos.y}
-                size={PLANET_SIZES[planet.id] || 5}
-                isSelected={selectedPlanet?.id === planet.id}
-                hasRings={planet.id === 'saturn'}
-                onClick={() => handleSelectPlanet(planet)}
-              />
-            );
-          })}
-        </svg>
-
-        {/* Panel Info Melayang (Overlay Card) di Sudut Atas Kanan */}
-        <PlanetInfo
-          planet={selectedPlanet}
-          onClose={() => setSelectedPlanet(null)}
+        {/* Matahari di Pusat Orbit (Interaktif saat diklik) */}
+        <Sun
+          cx={CENTER_X}
+          cy={CENTER_Y}
+          isSelected={selectedPlanet?.id === 'sun'}
+          onClick={handleSelectSun}
         />
 
-        {/* Petunjuk Interaksi di Sudut Bawah Kiri Kanvas */}
-        <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] text-slate-300 pointer-events-none select-none z-10">
-          Klik Matahari atau planet mana saja untuk melihat info detailnya
-        </div>
-      </div>
+        {/* Planet Mengorbit */}
+        {planets.map((planet) => {
+          const currentAngle = angles[planet.id] ?? 0;
+          const pos = calculateOrbitalPosition(
+            CENTER_X,
+            CENTER_Y,
+            planet.orbitRadius,
+            currentAngle
+          );
 
-      {/* Panel Kontrol Simulasi */}
-      <SimulationControls
-        isPlaying={isPlaying}
-        speed={speed}
-        onTogglePlay={() => setIsPlaying((p) => !p)}
-        onReset={handleReset}
-        onSpeedChange={setSpeed}
-      />
-
-      <p className="text-xs text-slate-400 text-center">
-        Skala visual disesuaikan agar seluruh planet dapat terlihat.
-      </p>
+          return (
+            <PlanetComponent
+              key={planet.id}
+              id={planet.id}
+              name={planet.name}
+              color={planet.color}
+              x={pos.x}
+              y={pos.y}
+              size={PLANET_SIZES[planet.id] || 5}
+              isSelected={selectedPlanet?.id === planet.id}
+              hasRings={planet.id === 'saturn'}
+              onClick={() => handleSelectPlanet(planet)}
+            />
+          );
+        })}
+      </svg>
     </div>
   );
 }

@@ -21,6 +21,13 @@ const SolarSystem3D = dynamic(
   }
 );
 
+const MOUSE_CONTROLS = [
+  { icon: '🖱️', title: 'Klik Kiri', desc: 'Putar Kamera', titleColor: 'text-sky-400' },
+  { icon: '🔄', title: 'Scroll Mouse', desc: 'Zoom In / Out', titleColor: 'text-sky-400' },
+  { icon: '🖐️', title: 'Klik R-Click', desc: 'Geser (Pan)', titleColor: 'text-sky-400' },
+  { icon: '🎯', title: 'Klik Planet', desc: 'Info Melayang', titleColor: 'text-amber-400' },
+];
+
 export default function EksplorasiPage() {
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
   const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null);
@@ -52,34 +59,15 @@ export default function EksplorasiPage() {
 
         {/* Petunjuk Kontrol Navigasi Mouse (Instruksional) */}
         <div className="w-full max-w-3xl mb-5 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-300">
-          <div className="bg-[#0B1020]/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
-            <span className="text-base">🖱️</span>
-            <div>
-              <span className="text-sky-400 font-bold block">Klik Kiri</span>
-              <span>Putar Kamera</span>
+          {MOUSE_CONTROLS.map((ctrl) => (
+            <div key={ctrl.title} className="bg-[#0B1020]/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+              <span className="text-base">{ctrl.icon}</span>
+              <div>
+                <span className={`${ctrl.titleColor} font-bold block`}>{ctrl.title}</span>
+                <span>{ctrl.desc}</span>
+              </div>
             </div>
-          </div>
-          <div className="bg-[#0B1020]/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
-            <span className="text-base">🔄</span>
-            <div>
-              <span className="text-sky-400 font-bold block">Scroll Mouse</span>
-              <span>Zoom In / Out</span>
-            </div>
-          </div>
-          <div className="bg-[#0B1020]/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
-            <span className="text-base">🖐️</span>
-            <div>
-              <span className="text-sky-400 font-bold block">Klik R-Click</span>
-              <span>Geser (Pan)</span>
-            </div>
-          </div>
-          <div className="bg-[#0B1020]/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
-            <span className="text-base">🎯</span>
-            <div>
-              <span className="text-amber-400 font-bold block">Klik Planet</span>
-              <span>Info Melayang</span>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Tombol Pengalih Mode 3D / 2D */}
@@ -108,10 +96,10 @@ export default function EksplorasiPage() {
 
         {/* Kontainer Kanvas Penuh Lebar (Full Width Canvas Container) */}
         <div className="w-full bg-[#0B1020]/90 border border-slate-800 rounded-3xl p-3 sm:p-4 backdrop-blur-md shadow-2xl flex flex-col items-center">
-          {viewMode === '3d' ? (
-            <div className="w-full flex flex-col items-center gap-4">
-              {/* Viewport 3D Canvas Penuh - Panel Melayang Berada di Dalamnya */}
-              <div className="w-full h-[580px] lg:h-[680px] rounded-2xl overflow-hidden bg-[#030611] border border-slate-800/80 shadow-inner relative">
+          <div className="w-full flex flex-col items-center gap-4">
+            {/* Viewport Canvas Penuh - Panel Melayang Berada di Dalamnya */}
+            <div className="w-full h-[580px] lg:h-[680px] rounded-2xl overflow-hidden bg-[#030611] border border-slate-800/80 shadow-inner relative flex items-center justify-center">
+              {viewMode === '3d' ? (
                 <SolarSystem3D
                   selectedPlanet={selectedPlanet}
                   onSelectPlanet={handleSelectPlanet}
@@ -119,33 +107,43 @@ export default function EksplorasiPage() {
                   speed={speed}
                   resetTrigger={resetTrigger}
                 />
-
-                {/* Panel Info Melayang (Overlay Card) di Sudut Atas Kanan Kanvas */}
-                <PlanetInfo
-                  planet={selectedPlanet}
-                  onClose={() => setSelectedPlanet(null)}
+              ) : (
+                <SolarSystem2D
+                  selectedPlanet={selectedPlanet}
+                  onSelectPlanet={handleSelectPlanet}
+                  isPlaying={isPlaying}
+                  speed={speed}
+                  resetTrigger={resetTrigger}
                 />
+              )}
 
-                {/* Petunjuk Interaksi di Sudut Bawah Kiri Kanvas */}
-                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] text-slate-300 pointer-events-none select-none z-10">
-                  Tahan klik kiri & geser untuk memutar | Scroll untuk zoom
-                </div>
-              </div>
-
-              {/* Kontrol Kecepatan dan Play/Pause di Bawah Kanvas */}
-              <SimulationControls
-                isPlaying={isPlaying}
-                speed={speed}
-                onTogglePlay={handleTogglePlay}
-                onReset={handleReset}
-                onSpeedChange={setSpeed}
+              {/* Panel Info Melayang (Overlay Card) di Sudut Atas Kanan Kanvas */}
+              <PlanetInfo
+                planet={selectedPlanet}
+                onClose={() => setSelectedPlanet(null)}
               />
+
+              {/* Petunjuk Interaksi di Sudut Bawah Kiri Kanvas */}
+              <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] text-slate-300 pointer-events-none select-none z-10">
+                {viewMode === '3d'
+                  ? 'Tahan klik kiri & geser untuk memutar | Scroll untuk zoom'
+                  : 'Klik Matahari atau planet mana saja untuk melihat info detailnya'}
+              </div>
             </div>
-          ) : (
-            <div className="w-full">
-              <SolarSystem2D />
-            </div>
-          )}
+
+            {/* Kontrol Kecepatan dan Play/Pause di Bawah Kanvas */}
+            <SimulationControls
+              isPlaying={isPlaying}
+              speed={speed}
+              onTogglePlay={handleTogglePlay}
+              onReset={handleReset}
+              onSpeedChange={setSpeed}
+            />
+
+            <p className="text-xs text-slate-400 text-center">
+              Skala visual disesuaikan agar seluruh planet dapat terlihat.
+            </p>
+          </div>
         </div>
       </div>
     </main>

@@ -1,9 +1,3 @@
-export interface OrbitalState {
-  angle: number;
-  x: number;
-  y: number;
-}
-
 export function calculateOrbitalPosition(
   centerX: number,
   centerY: number,

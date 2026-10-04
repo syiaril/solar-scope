@@ -9,6 +9,16 @@ interface PlanetInfoProps {
 }
 
 export function PlanetInfo({ planet, onClose }: PlanetInfoProps) {
+  const stats = planet
+    ? [
+        { label: 'Urutan Orbit', value: `Ke-${planet.order} dari Matahari`, colorClass: 'text-white' },
+        { label: 'Jarak Matahari', value: `${planet.distanceFromSun.toLocaleString('id-ID')} jt km`, colorClass: 'text-sky-300' },
+        { label: 'Diameter', value: `${planet.diameter.toLocaleString('id-ID')} km`, colorClass: 'text-white' },
+        { label: 'Rotasi Sumbu', value: planet.rotationPeriod, colorClass: 'text-white' },
+        { label: 'Revolusi Orbit', value: planet.revolutionPeriod, colorClass: 'text-amber-300', span: 'col-span-2' },
+      ]
+    : [];
+
   return (
     <AnimatePresence>
       {planet && (
@@ -57,36 +67,15 @@ export function PlanetInfo({ planet, onClose }: PlanetInfoProps) {
             </p>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-slate-900/70 p-2.5 rounded-xl border border-slate-800">
-                <span className="block text-slate-400 mb-0.5 text-[11px]">Urutan Orbit</span>
-                <span className="font-bold text-white">
-                  Ke-{planet.order} dari Matahari
-                </span>
-              </div>
-              <div className="bg-slate-900/70 p-2.5 rounded-xl border border-slate-800">
-                <span className="block text-slate-400 mb-0.5 text-[11px]">Jarak Matahari</span>
-                <span className="font-bold text-sky-300">
-                  {planet.distanceFromSun.toLocaleString('id-ID')} jt km
-                </span>
-              </div>
-              <div className="bg-slate-900/70 p-2.5 rounded-xl border border-slate-800">
-                <span className="block text-slate-400 mb-0.5 text-[11px]">Diameter</span>
-                <span className="font-bold text-white">
-                  {planet.diameter.toLocaleString('id-ID')} km
-                </span>
-              </div>
-              <div className="bg-slate-900/70 p-2.5 rounded-xl border border-slate-800">
-                <span className="block text-slate-400 mb-0.5 text-[11px]">Rotasi Sumbu</span>
-                <span className="font-bold text-white">
-                  {planet.rotationPeriod}
-                </span>
-              </div>
-              <div className="col-span-2 bg-slate-900/70 p-2.5 rounded-xl border border-slate-800">
-                <span className="block text-slate-400 mb-0.5 text-[11px]">Revolusi Orbit</span>
-                <span className="font-bold text-amber-300">
-                  {planet.revolutionPeriod}
-                </span>
-              </div>
+              {stats.map((s) => (
+                <div
+                  key={s.label}
+                  className={`bg-slate-900/70 p-2.5 rounded-xl border border-slate-800 ${s.span || ''}`}
+                >
+                  <span className="block text-slate-400 mb-0.5 text-[11px]">{s.label}</span>
+                  <span className={`font-bold ${s.colorClass}`}>{s.value}</span>
+                </div>
+              ))}
             </div>
 
             {/* Fakta Unik */}

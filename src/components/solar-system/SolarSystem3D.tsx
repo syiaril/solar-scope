@@ -27,6 +27,14 @@ const PLANET_3D_CONFIG: Record<string, { size: number; orbitDist: number }> = {
   neptune: { size: 2.4, orbitDist: 110 },
 };
 
+function createCircleGeometry(radius: number, segments: number): THREE.BufferGeometry {
+  const curve = new THREE.EllipseCurve(0, 0, radius, radius, 0, 2 * Math.PI, false, 0);
+  const points = curve.getPoints(segments);
+  return new THREE.BufferGeometry().setFromPoints(
+    points.map((p) => new THREE.Vector3(p.x, 0, p.y))
+  );
+}
+
 export default function SolarSystem3D({
   selectedPlanet,
   onSelectPlanet,
@@ -38,16 +46,16 @@ export default function SolarSystem3D({
 
   // Simpan state terkini dalam ref agar animation loop berjalan mulus tanpa re-create scene
   const isPlayingRef = useRef(isPlaying);
-  isPlayingRef.current = isPlaying;
-
   const speedRef = useRef(speed);
-  speedRef.current = speed;
-
   const onSelectPlanetRef = useRef(onSelectPlanet);
-  onSelectPlanetRef.current = onSelectPlanet;
-
   const selectedPlanetRef = useRef(selectedPlanet);
-  selectedPlanetRef.current = selectedPlanet;
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+    speedRef.current = speed;
+    onSelectPlanetRef.current = onSelectPlanet;
+    selectedPlanetRef.current = selectedPlanet;
+  }, [isPlaying, speed, onSelectPlanet, selectedPlanet]);
 
   const anglesRef = useRef<Record<string, number>>(getInitialAngles());
   const planetMeshesRef = useRef<Record<string, THREE.Mesh>>({});
@@ -147,11 +155,7 @@ export default function SolarSystem3D({
     scene.add(sunGlow);
 
     // Cincin seleksi untuk Matahari
-    const sunSelCurve = new THREE.EllipseCurve(0, 0, 8.8, 8.8, 0, 2 * Math.PI, false, 0);
-    const sunSelPoints = sunSelCurve.getPoints(50);
-    const sunSelGeometry = new THREE.BufferGeometry().setFromPoints(
-      sunSelPoints.map((p) => new THREE.Vector3(p.x, 0, p.y))
-    );
+    const sunSelGeometry = createCircleGeometry(8.8, 50);
     const sunSelMaterial = new THREE.LineBasicMaterial({
       color: 0xffea00,
       transparent: true,
@@ -170,11 +174,7 @@ export default function SolarSystem3D({
       const config = PLANET_3D_CONFIG[planet.id] || { size: 1.5, orbitDist: 30 };
 
       // Garis jalur orbit melingkar 3D
-      const orbitCurve = new THREE.EllipseCurve(0, 0, config.orbitDist, config.orbitDist, 0, 2 * Math.PI, false, 0);
-      const orbitPoints = orbitCurve.getPoints(100);
-      const orbitGeometry = new THREE.BufferGeometry().setFromPoints(
-        orbitPoints.map((p) => new THREE.Vector3(p.x, 0, p.y))
-      );
+      const orbitGeometry = createCircleGeometry(config.orbitDist, 100);
       const orbitMaterial = new THREE.LineBasicMaterial({
         color: 0x475569,
         transparent: true,
@@ -212,11 +212,7 @@ export default function SolarSystem3D({
       }
 
       // Cincin penanda pilihan (Selection indicator ring)
-      const selCurve = new THREE.EllipseCurve(0, 0, config.size * 1.6, config.size * 1.6, 0, 2 * Math.PI, false, 0);
-      const selPoints = selCurve.getPoints(50);
-      const selGeometry = new THREE.BufferGeometry().setFromPoints(
-        selPoints.map((p) => new THREE.Vector3(p.x, 0, p.y))
-      );
+      const selGeometry = createCircleGeometry(config.size * 1.6, 50);
       const selMaterial = new THREE.LineBasicMaterial({
         color: 0x38bdf8,
         transparent: true,
