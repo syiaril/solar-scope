@@ -1,109 +1,119 @@
-import { QuizQuestion } from '../types/quiz';
+import { QuizQuestion } from '@/types/quiz';
 
-export const quizQuestions: QuizQuestion[] = [
+export const questions: QuizQuestion[] = [
   {
     id: 1,
     question: "Planet manakah yang paling dekat dengan Matahari?",
-    options: ["Venus", "Merkurius", "Bumi", "Mars"],
-    correctAnswer: 1,
-    explanation: "Merkurius adalah planet terdekat dengan Matahari pada jarak rata-rata 57,9 juta kilometer."
+    options: ["Venus", "Mars", "Merkurius", "Bumi"],
+    correctAnswer: 2,
+    explanation: "Merkurius adalah planet terdekat dari Matahari dengan jarak rata-rata sekitar 57,9 juta km."
   },
   {
     id: 2,
-    question: "Planet apa yang dikenal sebagai 'Planet Merah'?",
-    options: ["Yupiter", "Venus", "Mars", "Saturnus"],
-    correctAnswer: 2,
-    explanation: "Mars disebut Planet Merah karena permukaannya yang mengandung banyak oksida besi atau karat."
+    question: "Apa nama planet terbesar di seluruh Tata Surya kita?",
+    options: ["Saturnus", "Yupiter", "Neptunus", "Uranus"],
+    correctAnswer: 1,
+    explanation: "Yupiter adalah planet terbesar dengan diameter sekitar 142.984 km dan massa lebih dari dua kali lipat gabungan seluruh planet lainnya."
   },
   {
     id: 3,
-    question: "Planet manakah yang memiliki cincin paling menonjol dan indah?",
-    options: ["Uranus", "Yupiter", "Neptunus", "Saturnus"],
-    correctAnswer: 3,
-    explanation: "Saturnus sangat terkenal dengan sistem cincinnya yang luas dan terang, terbuat dari es dan batuan."
+    question: "Planet mana yang terkenal memiliki sistem cincin paling megah dan luas?",
+    options: ["Saturnus", "Yupiter", "Uranus", "Neptunus"],
+    correctAnswer: 0,
+    explanation: "Saturnus memiliki cincin spektakuler yang terbentuk dari miliaran partikel es, batu, dan debu kosmik."
   },
   {
     id: 4,
-    question: "Planet terbesar di Tata Surya adalah?",
-    options: ["Bumi", "Yupiter", "Saturnus", "Neptunus"],
-    correctAnswer: 1,
-    explanation: "Yupiter adalah planet raksasa gas yang diameternya 11 kali lebih besar dari Bumi, menjadikannya yang terbesar di Tata Surya."
+    question: "Planet manakah yang sering dijuluki sebagai 'Planet Merah'?",
+    options: ["Merkurius", "Venus", "Mars", "Yupiter"],
+    correctAnswer: 2,
+    explanation: "Mars dijuluki Planet Merah karena permukaannya yang kaya akan debu besi oksida (karat)."
   },
   {
     id: 5,
-    question: "Berapa lama Bumi membutuhkan waktu untuk berevolusi mengelilingi Matahari?",
-    options: ["24 jam", "1 bulan", "365,25 hari", "687 hari"],
-    correctAnswer: 2,
-    explanation: "Satu kali revolusi Bumi mengelilingi Matahari memakan waktu sekitar 365,25 hari, yang mendasari perhitungan satu tahun di Bumi."
+    question: "Berapa lama waktu yang dibutuhkan Bumi untuk mengelilingi Matahari satu putaran penuh?",
+    options: ["24 jam", "365,2 hari", "30 hari", "687 hari"],
+    correctAnswer: 1,
+    explanation: "Periode revolusi Bumi mengelilingi Matahari adalah sekitar 365,25 hari (1 tahun kalender)."
   },
   {
     id: 6,
-    question: "Planet manakah yang merupakan planet terpanas di Tata Surya kita?",
-    options: ["Merkurius", "Bumi", "Mars", "Venus"],
-    correctAnswer: 3,
-    explanation: "Meski Merkurius paling dekat dengan Matahari, atmosfer Venus yang sangat tebal menjebak panas (efek rumah kaca), sehingga menjadi yang terpanas."
+    question: "Planet manakah yang memiliki suhu permukaan paling panas di Tata Surya?",
+    options: ["Merkurius", "Venus", "Mars", "Matahari"],
+    correctAnswer: 1,
+    explanation: "Meskipun Merkurius lebih dekat dengan Matahari, Venus adalah planet terpanas (~465°C) karena atmosfer tebal karbon dioksida yang memicu efek rumah kaca ekstrem."
   },
   {
     id: 7,
-    question: "Bintik Merah Raksasa adalah badai besar yang terjadi di planet...",
-    options: ["Yupiter", "Saturnus", "Mars", "Uranus"],
-    correctAnswer: 0,
-    explanation: "Bintik Merah Raksasa di Yupiter adalah badai raksasa yang telah diamati selama lebih dari 300 tahun."
+    question: "Bintik Merah Raksasa (Great Red Spot) merupakan badai abadi raksasa yang berada di planet...",
+    options: ["Mars", "Saturnus", "Yupiter", "Neptunus"],
+    correctAnswer: 2,
+    explanation: "Bintik Merah Raksasa adalah badai antisiklon raksasa di atmosfer Yupiter yang telah teramati lebih dari ratusan tahun."
   },
   {
     id: 8,
-    question: "Planet manakah yang berotasi (berputar) dengan kemiringan hampir 98 derajat, sehingga terlihat seperti menggelinding?",
-    options: ["Merkurius", "Venus", "Uranus", "Neptunus"],
-    correctAnswer: 2,
-    explanation: "Sumbu rotasi Uranus miring secara ekstrem, kemungkinan akibat tabrakan besar dengan objek seukuran Bumi di masa lalu."
+    question: "Planet manakah yang memiliki kemiringan sumbu rotasi ekstrem hingga hampir 98 derajat sehingga tampak berputar menyamping?",
+    options: ["Uranus", "Neptunus", "Saturnus", "Venus"],
+    correctAnswer: 0,
+    explanation: "Uranus menggelinding pada orbitnya dengan kemiringan sumbu sekitar 97,8°, diduga akibat tabrakan raksasa pada masa awal pembentukannya."
   },
   {
     id: 9,
-    question: "Matahari sebenarnya adalah sebuah...",
-    options: ["Planet", "Bintang", "Komet", "Asteroid"],
-    correctAnswer: 1,
-    explanation: "Matahari adalah sebuah bintang di pusat Tata Surya yang tersusun atas hidrogen dan helium yang sangat panas."
+    question: "Planet manakah yang tercatat memiliki kecepatan angin tercepat di Tata Surya, mencapai 2.100 km/jam?",
+    options: ["Yupiter", "Saturnus", "Uranus", "Neptunus"],
+    correctAnswer: 3,
+    explanation: "Neptunus memiliki atmosfer dinamis dengan hembusan angin supersonik tercepat di Tata Surya."
   },
   {
     id: 10,
-    question: "Gunung berapi terbesar di Tata Surya, Olympus Mons, berada di planet?",
-    options: ["Bumi", "Venus", "Mars", "Yupiter"],
-    correctAnswer: 2,
-    explanation: "Olympus Mons di Mars adalah gunung berapi raksasa yang tingginya sekitar tiga kali lipat dari Gunung Everest."
+    question: "Planet manakah yang memiliki massa jenis paling rendah sehingga secara teori dapat terapung di atas air?",
+    options: ["Mars", "Saturnus", "Uranus", "Merkurius"],
+    correctAnswer: 1,
+    explanation: "Saturnus memiliki kerapatan rata-rata sekitar 0,687 g/cm³, lebih kecil dari kerapatan air (1 g/cm³)."
   },
   {
     id: 11,
-    question: "Planet mana yang memiliki rotasi berlawanan (retrograde) paling lambat, di mana satu hari lebih lama dari satu tahunnya?",
-    options: ["Venus", "Uranus", "Merkurius", "Pluto"],
-    correctAnswer: 0,
-    explanation: "Venus berotasi dari timur ke barat selama 243 hari Bumi, sedangkan revolusinya hanya 224,7 hari Bumi."
+    question: "Gunung berapi tertinggi di Tata Surya, Olympus Mons, terletak di planet mana?",
+    options: ["Bumi", "Venus", "Mars", "Merkurius"],
+    correctAnswer: 2,
+    explanation: "Olympus Mons di Mars adalah gunung perisai raksasa dengan ketinggian sekitar 21,9 km, hampir tiga kali tinggi Gunung Everest."
   },
   {
     id: 12,
-    question: "Apa nama galaksi tempat Tata Surya kita berada?",
-    options: ["Andromeda", "Sombrero", "Bima Sakti", "Triangulum"],
-    correctAnswer: 2,
-    explanation: "Tata Surya kita terletak di salah satu lengan spiral galaksi Bima Sakti (Milky Way)."
+    question: "Planet manakah yang berotasi paling lambat dan arah rotasinya berlawanan (retrograde) dibandingkan mayoritas planet lainnya?",
+    options: ["Venus", "Merkurius", "Uranus", "Mars"],
+    correctAnswer: 0,
+    explanation: "Venus berotasi sangat lambat (243 hari Bumi untuk satu putaran) dan berputar searah jarum jam (retrograde), sehingga Matahari terbit dari barat."
   },
   {
     id: 13,
-    question: "Planet gas yang memiliki warna biru kehijauan yang khas akibat metana di atmosfernya adalah?",
-    options: ["Yupiter", "Saturnus", "Bumi", "Uranus"],
-    correctAnswer: 3,
-    explanation: "Uranus memiliki warna biru kehijauan pucat karena metana di bagian atas atmosfernya yang menyerap cahaya merah."
+    question: "Planet ke-8 dan terjauh dari Matahari dalam sistem tata surya kita saat ini adalah...",
+    options: ["Pluto", "Neptunus", "Uranus", "Saturnus"],
+    correctAnswer: 1,
+    explanation: "Sejak klasifikasi ulang IAU pada tahun 2006 yang menetapkan Pluto sebagai planet kerdil, Neptunus adalah planet ke-8 dan terjauh dari Matahari."
   },
   {
     id: 14,
-    question: "Berapa jumlah planet utama dalam Tata Surya kita saat ini?",
-    options: ["7", "8", "9", "10"],
-    correctAnswer: 1,
-    explanation: "Sejak klasifikasi ulang Pluto pada tahun 2006, saat ini terdapat 8 planet utama yang diakui dalam Tata Surya kita."
+    question: "Manakah kelompok planet di bawah ini yang seluruh anggotanya tergolong sebagai planet kebumian (terrestrial)?",
+    options: [
+      "Merkurius, Venus, Bumi, Mars",
+      "Yupiter, Saturnus, Uranus, Neptunus",
+      "Bumi, Mars, Yupiter, Saturnus",
+      "Merkurius, Bumi, Saturnus, Neptunus"
+    ],
+    correctAnswer: 0,
+    explanation: "Empat planet terdalam (Merkurius, Venus, Bumi, dan Mars) adalah planet berbatu atau terestrial dengan permukaan padat."
   },
   {
     id: 15,
-    question: "Planet dengan kecepatan revolusi paling lambat di Tata Surya adalah?",
-    options: ["Yupiter", "Saturnus", "Uranus", "Neptunus"],
-    correctAnswer: 3,
-    explanation: "Karena jaraknya paling jauh dari Matahari, Neptunus membutuhkan waktu 164,8 tahun Bumi untuk menyelesaikan satu kali orbit."
+    question: "Apa komposisi utama yang menyusun Matahari kita?",
+    options: [
+      "Oksigen dan Karbon",
+      "Besi dan Nikel",
+      "Hidrogen dan Helium",
+      "Nitrogen dan Metana"
+    ],
+    correctAnswer: 2,
+    explanation: "Matahari sebagian besar tersusun atas gas Hidrogen (~73%) dan Helium (~25%) yang mengalami reaksi fusi nuklir di intinya."
   }
 ];

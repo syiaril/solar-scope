@@ -17,17 +17,17 @@ export function calculateOrbitalPosition(
 }
 
 export function getInitialAngles(): Record<string, number> {
-  // Spread planets around the orbit so they don't start bunched
+  // Sebarkan planet di sepanjang orbit agar tidak bertumpuk di titik awal
   return {
     mercury: 0,
-    venus: Math.PI * 0.4,
-    earth: Math.PI * 0.8,
-    mars: Math.PI * 1.2,
-    jupiter: Math.PI * 1.5,
-    saturn: Math.PI * 0.2,
-    uranus: Math.PI * 0.7,
-    neptune: Math.PI * 1.1,
+    venus: Math.PI * 0.45,
+    earth: Math.PI * 0.9,
+    mars: Math.PI * 1.35,
+    jupiter: Math.PI * 1.7,
+    saturn: Math.PI * 0.25,
+    uranus: Math.PI * 0.75,
+    neptune: Math.PI * 1.15,
   };
 }
 
-export const BASE_SPEED = 0.002;
+export const BASE_SPEED = 0.008;
