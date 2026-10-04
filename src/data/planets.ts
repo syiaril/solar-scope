@@ -1,5 +1,21 @@
 import { Planet } from '@/types/planet';
 
+export const sunData: Planet = {
+  id: 'sun',
+  name: 'Matahari',
+  order: 0,
+  diameter: 1392700,
+  distanceFromSun: 0,
+  rotationPeriod: '25 - 35 hari',
+  revolutionPeriod: 'Pusat Tata Surya (230 jt thn galaksi)',
+  description:
+    'Matahari adalah bintang katai kuning raksasa yang menjadi jantung dan pusat gravitasi Tata Surya. Memuat 99,86% dari seluruh massa Tata Surya.',
+  fact: 'Di dalam inti Matahari, terjadi fusi nuklir yang mengubah 600 juta ton hidrogen menjadi helium setiap detiknya, menghasilkan cahaya dan panas bagi seluruh kehidupan di Bumi.',
+  color: '#FDB813',
+  orbitRadius: 0,
+  orbitSpeed: 0,
+};
+
 export const planets: Planet[] = [
   {
     id: 'mercury',

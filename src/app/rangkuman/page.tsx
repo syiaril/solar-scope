@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { planets } from '@/data/planets';
+import { planets, sunData } from '@/data/planets';
 
 export const metadata: Metadata = {
   title: 'Rangkuman Materi Tata Surya | SolarScope',
@@ -12,92 +12,144 @@ export default function RangkumanPage() {
   const planetLuar = planets.slice(4, 8);
 
   return (
-    <main className="min-h-screen pt-24 pb-20 px-4 bg-[#050816] text-white flex flex-col items-center">
-      <div className="max-w-5xl w-full mx-auto">
+    <main className="min-h-screen pt-24 pb-20 px-4 sm:px-6 bg-[#050816] text-white flex flex-col items-center">
+      <div className="max-w-6xl w-full mx-auto">
         {/* Header Rangkuman */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-[#FACC15] font-semibold mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-[#FACC15] font-semibold mb-3 shadow-sm">
             <span>📜 Komponen Instruksional: Rangkuman/Ringkasan Materi</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-sky-300 to-[#FACC15]">
+          <h1 className="text-3xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-sky-300 to-[#FACC15] tracking-tight">
             Rangkuman Tata Surya
           </h1>
-          <p className="text-slate-400 text-sm md:text-base mt-2 max-w-2xl mx-auto">
+          <p className="text-slate-400 text-sm md:text-base mt-2.5 max-w-2xl mx-auto">
             Intisari konsep penting peredaran benda langit dan anggota keluarga Tata Surya kita.
           </p>
         </div>
 
         {/* Kotak Inti Rangkuman Materi */}
-        <div className="bg-[#0B1020] border-2 border-slate-800 rounded-3xl p-6 md:p-10 mb-10 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-[#7C3AED]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-[#0B1020] border-2 border-slate-800 rounded-3xl p-6 md:p-10 mb-12 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#7C3AED]/10 rounded-full blur-3xl pointer-events-none" />
 
+          {/* Header Kartu Utama */}
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-slate-800">
-            <span className="text-4xl">🌌</span>
+            <span className="text-4xl filter drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]">🌌</span>
             <div>
               <h2 className="text-xl md:text-2xl font-bold text-white">
                 Konsep Pokok Tata Surya
               </h2>
-              <p className="text-xs text-slate-400">Pusat orbit dan klasifikasi planet</p>
+              <p className="text-xs text-slate-400 mt-0.5">Pusat orbit dan klasifikasi anggota tata surya</p>
             </div>
           </div>
 
+          {/* Kutipan Inti Materi */}
           <div className="p-5 md:p-6 rounded-2xl bg-slate-900/80 border border-slate-800 text-base md:text-lg leading-relaxed text-slate-200 mb-8 font-medium">
-            &ldquo;<strong className="text-[#FACC15]">Tata surya kita terdiri dari Matahari sebagai pusatnya</strong>, dikelilingi oleh <strong className="text-sky-300">8 planet</strong>: <span className="text-slate-100">Merkurius, Venus, Bumi, Mars, Yupiter, Saturnus, Uranus, dan Neptunus</span> yang mengorbit karena gaya gravitasi Matahari.&rdquo;
+            &ldquo;<strong className="text-[#FACC15]">Tata surya kita terdiri dari Matahari sebagai pusatnya</strong>, dikelilingi oleh <strong className="text-sky-300">8 planet</strong>: <span className="text-slate-100 font-semibold">Merkurius, Venus, Bumi, Mars, Yupiter, Saturnus, Uranus, dan Neptunus</span> yang mengorbit karena gaya gravitasi Matahari.&rdquo;
           </div>
 
-          {/* Pengelompokan Planet Dalam & Luar */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Bagian Planet Dalam */}
-            <div className="p-6 rounded-2xl bg-[#070C1E] border border-slate-800/80">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">🪨</span>
-                <h3 className="text-lg font-bold text-amber-400">
-                  Planet Dalam (Terestrial / Kebumian)
-                </h3>
+          {/* Kartu Bintang Pusat (Matahari) */}
+          <div className="p-5 rounded-2xl bg-[#070C1E] border border-amber-500/30 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <span className="text-3xl filter drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]">☀️</span>
+              <div>
+                <span className="text-xs uppercase font-bold text-amber-400 tracking-wider block">
+                  Pusat Tata Surya
+                </span>
+                <h3 className="text-lg font-bold text-white">{sunData.name}</h3>
               </div>
-              <p className="text-xs text-slate-400 mb-4">
-                Terletak di antara Matahari dan sabuk asteroid. Berpermukaan padat dan berbatu.
-              </p>
-              <div className="space-y-2">
-                {planetDalam.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
-                    <span className="font-semibold text-white flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                      {p.order}. {p.name}
-                    </span>
-                    <span className="text-slate-400">{p.description}</span>
-                  </div>
-                ))}
+            </div>
+            <p className="text-xs sm:text-sm text-slate-300 sm:max-w-xl leading-relaxed">
+              {sunData.description}
+            </p>
+          </div>
+
+          {/* Pengelompokan Planet Dalam & Luar dengan Tata Letak Lega */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Bagian Planet Dalam */}
+            <div className="p-6 md:p-7 rounded-3xl bg-[#070C1E] border border-slate-800 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-2xl">🪨</span>
+                  <h3 className="text-xl font-bold text-amber-400">
+                    Planet Dalam (Terestrial)
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+                  Terletak di antara Matahari dan sabuk asteroid. Berukuran lebih kecil, memiliki permukaan padat, dan tersusun atas bebatuan serta logam.
+                </p>
+
+                {/* List Planet Dalam dengan Spacing Lega */}
+                <div className="space-y-4">
+                  {planetDalam.map((p) => (
+                    <div
+                      key={p.id}
+                      className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col gap-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2.5">
+                          <span
+                            className="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm"
+                            style={{ backgroundColor: p.color }}
+                          />
+                          {p.order}. {p.name}
+                        </span>
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
+                          {p.distanceFromSun} jt km
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pl-6">
+                        {p.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Bagian Planet Luar */}
-            <div className="p-6 rounded-2xl bg-[#070C1E] border border-slate-800/80">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">🪐</span>
-                <h3 className="text-lg font-bold text-sky-400">
-                  Planet Luar (Raksasa Gas & Es)
-                </h3>
-              </div>
-              <p className="text-xs text-slate-400 mb-4">
-                Terletak di luar sabuk asteroid. Berukuran sangat besar dan tidak memiliki permukaan padat.
-              </p>
-              <div className="space-y-2">
-                {planetLuar.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
-                    <span className="font-semibold text-white flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                      {p.order}. {p.name}
-                    </span>
-                    <span className="text-slate-400">{p.description}</span>
-                  </div>
-                ))}
+            <div className="p-6 md:p-7 rounded-3xl bg-[#070C1E] border border-slate-800 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-2xl">🪐</span>
+                  <h3 className="text-xl font-bold text-sky-400">
+                    Planet Luar (Raksasa Gas & Es)
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+                  Terletak di luar sabuk asteroid. Berukuran raksasa, tersusun atas gas dan es tebal, serta memiliki banyak satelit alami dan sistem cincin.
+                </p>
+
+                {/* List Planet Luar dengan Spacing Lega */}
+                <div className="space-y-4">
+                  {planetLuar.map((p) => (
+                    <div
+                      key={p.id}
+                      className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col gap-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-white text-sm sm:text-base flex items-center gap-2.5">
+                          <span
+                            className="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm"
+                            style={{ backgroundColor: p.color }}
+                          />
+                          {p.order}. {p.name}
+                        </span>
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
+                          {p.distanceFromSun} jt km
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pl-6">
+                        {p.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tombol Lanjut ke Soal & Latihan */}
+        {/* Tombol Navigasi Lanjut */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
             href="/belajar"

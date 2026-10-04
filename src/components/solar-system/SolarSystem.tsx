@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { planets } from '@/data/planets';
+import { planets, sunData } from '@/data/planets';
 import { Planet } from '@/types/planet';
 import { calculateOrbitalPosition, getInitialAngles, BASE_SPEED } from '@/lib/simulation';
 import { Sun } from './Sun';
@@ -47,7 +47,7 @@ export default function SolarSystem() {
       if (!lastTimeRef.current) {
         lastTimeRef.current = time;
       }
-      const delta = Math.min(time - lastTimeRef.current, 100); // Batasi clamp delta agar tidak loncat bila tab idle
+      const delta = Math.min(time - lastTimeRef.current, 100);
       lastTimeRef.current = time;
 
       if (isPlaying) {
@@ -84,89 +84,101 @@ export default function SolarSystem() {
     []
   );
 
+  const handleSelectSun = useCallback(() => {
+    setSelectedPlanet((prev) => (prev?.id === sunData.id ? null : sunData));
+  }, []);
+
   return (
-    <div className="w-full flex flex-col lg:flex-row gap-6 items-start justify-center">
-      {/* Area Simulasi SVG */}
-      <div className="flex-1 w-full flex flex-col items-center gap-5">
-        <div className="w-full max-w-[680px] aspect-square relative bg-[#050816]/60 rounded-3xl p-2 border border-slate-800/80 shadow-2xl flex items-center justify-center">
-          <svg
-            viewBox="0 0 750 750"
-            className="w-full h-full"
-            role="img"
-            aria-label="Simulasi Tata Surya interaktif bergerak"
-          >
-            {/* Taburan Bintang Latar Belakang */}
-            {STARS.map((star, i) => (
-              <circle
-                key={`star-${i}`}
-                cx={star.x}
-                cy={star.y}
-                r={star.r}
-                fill="white"
-                opacity={star.opacity}
+    <div className="w-full flex flex-col items-center gap-4">
+      {/* Viewport 2D SVG Penuh - Panel Info Melayang di Dalamnya */}
+      <div className="w-full h-[580px] lg:h-[680px] rounded-2xl overflow-hidden bg-[#030611] border border-slate-800/80 shadow-inner relative flex items-center justify-center p-2 sm:p-4">
+        <svg
+          viewBox="0 0 750 750"
+          className="w-full h-full max-h-full max-w-full aspect-square"
+          role="img"
+          aria-label="Simulasi Tata Surya 2D Skematik interaktif bergerak"
+        >
+          {/* Taburan Bintang Latar Belakang */}
+          {STARS.map((star, i) => (
+            <circle
+              key={`star-${i}`}
+              cx={star.x}
+              cy={star.y}
+              r={star.r}
+              fill="white"
+              opacity={star.opacity}
+            />
+          ))}
+
+          {/* Jalur Orbit Tiap Planet */}
+          {planets.map((planet) => (
+            <Orbit
+              key={`orbit-${planet.id}`}
+              cx={CENTER_X}
+              cy={CENTER_Y}
+              radius={planet.orbitRadius}
+            />
+          ))}
+
+          {/* Matahari di Pusat Orbit (Interaktif saat diklik) */}
+          <Sun
+            cx={CENTER_X}
+            cy={CENTER_Y}
+            isSelected={selectedPlanet?.id === 'sun'}
+            onClick={handleSelectSun}
+          />
+
+          {/* Planet Mengorbit */}
+          {planets.map((planet) => {
+            const currentAngle = anglesRef.current[planet.id] ?? 0;
+            const pos = calculateOrbitalPosition(
+              CENTER_X,
+              CENTER_Y,
+              planet.orbitRadius,
+              currentAngle
+            );
+
+            return (
+              <PlanetComponent
+                key={planet.id}
+                id={planet.id}
+                name={planet.name}
+                color={planet.color}
+                x={pos.x}
+                y={pos.y}
+                size={PLANET_SIZES[planet.id] || 5}
+                isSelected={selectedPlanet?.id === planet.id}
+                hasRings={planet.id === 'saturn'}
+                onClick={() => handleSelectPlanet(planet)}
               />
-            ))}
+            );
+          })}
+        </svg>
 
-            {/* Jalur Orbit Tiap Planet */}
-            {planets.map((planet) => (
-              <Orbit
-                key={`orbit-${planet.id}`}
-                cx={CENTER_X}
-                cy={CENTER_Y}
-                radius={planet.orbitRadius}
-              />
-            ))}
-
-            {/* Matahari di Pusat Orbit */}
-            <Sun cx={CENTER_X} cy={CENTER_Y} />
-
-            {/* Planet Mengorbit */}
-            {planets.map((planet) => {
-              const currentAngle = anglesRef.current[planet.id] ?? 0;
-              const pos = calculateOrbitalPosition(
-                CENTER_X,
-                CENTER_Y,
-                planet.orbitRadius,
-                currentAngle
-              );
-
-              return (
-                <PlanetComponent
-                  key={planet.id}
-                  id={planet.id}
-                  name={planet.name}
-                  color={planet.color}
-                  x={pos.x}
-                  y={pos.y}
-                  size={PLANET_SIZES[planet.id] || 5}
-                  isSelected={selectedPlanet?.id === planet.id}
-                  hasRings={planet.id === 'saturn'}
-                  onClick={() => handleSelectPlanet(planet)}
-                />
-              );
-            })}
-          </svg>
-        </div>
-
-        {/* Panel Kontrol Simulasi */}
-        <SimulationControls
-          isPlaying={isPlaying}
-          speed={speed}
-          onTogglePlay={() => setIsPlaying((p) => !p)}
-          onReset={handleReset}
-          onSpeedChange={setSpeed}
+        {/* Panel Info Melayang (Overlay Card) di Sudut Atas Kanan */}
+        <PlanetInfo
+          planet={selectedPlanet}
+          onClose={() => setSelectedPlanet(null)}
         />
 
-        <p className="text-xs text-slate-400 text-center">
-          Skala visual disesuaikan agar seluruh planet dapat terlihat.
-        </p>
+        {/* Petunjuk Interaksi di Sudut Bawah Kiri Kanvas */}
+        <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] text-slate-300 pointer-events-none select-none z-10">
+          Klik Matahari atau planet mana saja untuk melihat info detailnya
+        </div>
       </div>
 
-      {/* Panel Info Planet Terpilih */}
-      <PlanetInfo
-        planet={selectedPlanet}
-        onClose={() => setSelectedPlanet(null)}
+      {/* Panel Kontrol Simulasi */}
+      <SimulationControls
+        isPlaying={isPlaying}
+        speed={speed}
+        onTogglePlay={() => setIsPlaying((p) => !p)}
+        onReset={handleReset}
+        onSpeedChange={setSpeed}
       />
+
+      <p className="text-xs text-slate-400 text-center">
+        Skala visual disesuaikan agar seluruh planet dapat terlihat.
+      </p>
     </div>
   );
 }
